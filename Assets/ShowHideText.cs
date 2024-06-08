@@ -7,13 +7,15 @@ public class ShowHideText : MonoBehaviour
 {
     public Text smallText;
     public Text fullText;
+    public GameObject fullTextScrollView;
 
     bool isFullTextShown = false;
+    TextObject currentTextObject;
 
     void Start()
     {
-        smallText.gameObject.SetActive(true);
-        fullText.gameObject.SetActive(false);
+        smallText.gameObject.SetActive(false);
+        fullTextScrollView.SetActive(false);
     }
 
     void Update()
@@ -21,31 +23,68 @@ public class ShowHideText : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
         {
-            
-            if (hit.collider.gameObject == gameObject)
+            TextObject textObject = hit.collider.gameObject.GetComponent<TextObject>();
+
+            if (textObject != null)
             {
-                Debug.Log("Смотрим правильно");
-                smallText.gameObject.SetActive(true);
+                currentTextObject = textObject;
+
+                if (!isFullTextShown) {
+                    ShowSmallText(currentTextObject.smallTextToDisplay);
+                }
+
+                if (!isFullTextShown && Input.GetKeyDown(KeyCode.E)) {
+                    ShowFullText(currentTextObject.fulltextToDisplay);
+                    HideSmallText();
+                }
             }
             else
             {
-                Debug.Log("Смотрим на другой объект");
-                Debug.Log(hit.collider.gameObject);
-                smallText.gameObject.SetActive(false);
-                fullText.gameObject.SetActive(false);
+                HideFullText();
+                HideSmallText();
+                currentTextObject = null;
             }
+        } 
+        else 
+        {
+            HideFullText();
+            HideSmallText();
+            currentTextObject = null;
         }
 
-        if (isFullTextShown && Input.GetKeyDown(KeyCode.Space))
+        if (isFullTextShown && Input.GetKeyUp(KeyCode.Q))
         {
-            fullText.gameObject.SetActive(false);
-            isFullTextShown = false;
+            HideFullText();
         }
     }
 
-    public void ShowFullText()
+    public void ShowSmallText(string text)
     {
-        fullText.gameObject.SetActive(true);
+        smallText.text = text;
+        smallText.gameObject.SetActive(true);
+    }
+
+    public void HideSmallText()
+    {
+        smallText.gameObject.SetActive(false);
+    }
+
+    public void ShowFullText(string text)
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        fullText.text = text;
+        fullTextScrollView.SetActive(true);
         isFullTextShown = true;
+    }
+
+    public void HideFullText()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        fullTextScrollView.SetActive(false);
+        isFullTextShown = false;
     }
 }
