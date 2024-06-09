@@ -7,6 +7,7 @@ public class ShowHideText : MonoBehaviour
 {
     public Text smallText;
     public Text fullText;
+    public Text infoText;
     public GameObject fullTextScrollView;
 
     bool isFullTextShown = false;
@@ -16,6 +17,7 @@ public class ShowHideText : MonoBehaviour
     {
         smallText.gameObject.SetActive(false);
         fullTextScrollView.SetActive(false);
+        infoText.gameObject.SetActive(false);
     }
 
     void Update()
@@ -28,6 +30,7 @@ public class ShowHideText : MonoBehaviour
             if (textObject != null)
             {
                 currentTextObject = textObject;
+                infoText.gameObject.SetActive(true);
 
                 if (!isFullTextShown) {
                     ShowSmallText(currentTextObject.smallTextToDisplay);
@@ -42,6 +45,7 @@ public class ShowHideText : MonoBehaviour
             {
                 HideFullText();
                 HideSmallText();
+                infoText.gameObject.SetActive(false);
                 currentTextObject = null;
             }
         } 
@@ -49,6 +53,7 @@ public class ShowHideText : MonoBehaviour
         {
             HideFullText();
             HideSmallText();
+            infoText.gameObject.SetActive(false);
             currentTextObject = null;
         }
 
@@ -62,6 +67,7 @@ public class ShowHideText : MonoBehaviour
     {
         smallText.text = text;
         smallText.gameObject.SetActive(true);
+        infoText.text = "Нажмите E, чтобы увидеть полный текст";
     }
 
     public void HideSmallText()
@@ -77,6 +83,7 @@ public class ShowHideText : MonoBehaviour
         fullText.text = text;
         fullTextScrollView.SetActive(true);
         isFullTextShown = true;
+        infoText.text = "Нажмите Q, чтобы скрыть полный текст";
     }
 
     public void HideFullText()
